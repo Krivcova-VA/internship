@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+elementFormDefault="qualified"
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+targetNamespace="">
+	<xs:element name="Товары">
+	  <xs:complexType>
+		<xs:sequence>
+			<xs:element name="Товар" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Цена" minOccurs="2" maxOccurs="2">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:decimal">
+										<xs:attribute name="Тип" type="xs:string" use="required"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="Свойства" minOccurs="2" maxOccurs="3">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="Плотность" type="xs:integer"/>
+									<xs:element name="Формат" type="xs:string"/>
+									<xs:element name="Тип" type="xs:string"/>
+									<xs:element name="Белизна">
+										<xs:complexType>
+											<xs:simpleContent>
+												<xs:extension base="xs:integer">
+													<xs:attribute name="ЕдИзм" type="xs:string" use="required"/>
+												</xs:extension>
+											</xs:simpleContent>
+										</xs:complexType>
+									</xs:element>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="Разделы" minOccurs="1" maxOccurs="2">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="Раздел" type="xs:string"/>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Код" type="xs:string" use="required"/>
+		<xs:attribute name="Название" type="xs:string" use="required"/>
+	  </xs:complexType>
+	</xs:element>
+</xs:schema>
