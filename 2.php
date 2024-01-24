@@ -11,7 +11,7 @@
 
 <?php
 
-//ф-ция возвращает строку с инвертированной подстрокой(2 вхождение)
+//Функция возвращает строку с инвертированной подстрокой(2 вхождение)
 function convertString(string $a, string $b) : string
 {
     $pattern = '/^[a-z0-9]+$/i';
@@ -46,14 +46,14 @@ try {
 }
 
 
-//ф-ция возвращает двумерный массив $a отсортированный по возрастанию значений для ключа $b
+//Функция возвращает двумерный массив $a отсортированный по возрастанию значений для ключа $b
 function mySortForKey(array $a, string $b): array
 {
     if (!empty($b)) {
         for ($i = 0; $i < count($a); $i++) {
             $arrayKey = array_keys($a[$i]);
             if (!(in_array($b, $arrayKey, true))) {
-                throw new Exception("в подмассиве под индексом $i отсутствует ключ $b");
+                throw new \RuntimeException("в подмассиве под индексом $i отсутствует ключ $b");
             }
         }
         if ($b == $arrayKey[0]) {
@@ -67,7 +67,7 @@ function mySortForKey(array $a, string $b): array
         }
         return $a;
     } else {
-        throw new Exception('значение ключа $b не может быть пустым(null)');
+        throw new \RuntimeException('значение ключа $b не может быть пустым(null)');
     }
 }
 
@@ -91,7 +91,7 @@ try {
 
 
 <?php
-//импорт
+//Импорт в бд xml файла с входящей кодировкой windows-1251
 function importXml($a)
 {
     //чтение xml файла и перекодировка в utf-8
@@ -101,11 +101,11 @@ function importXml($a)
     $file = "2.xml";
     file_put_contents($file, $readXml);
 
-//проверка на синтаксис
+//Проверка файла на синтаксис
     $xml = XMLReader::open('2.xml');
     $xml->setParserProperty(XMLReader::VALIDATE, true);
 
-//проверка на соответствие схеме
+//Проверка файла на соответствие схеме
     function libxml_display_error($error): string
     {
         $return = "<br/>\n";
@@ -138,7 +138,7 @@ function importXml($a)
         libxml_clear_errors();
     }
 
-// Enable user error handling
+
     libxml_use_internal_errors(true);
 
     $xml = new DOMDocument();
@@ -150,7 +150,7 @@ function importXml($a)
 
     }
 
-    //парсер
+    //Парсер xml файла
     $tmpp = null;
     $curTag = "";
     $curCode = 0;
@@ -165,7 +165,7 @@ function importXml($a)
     $attrPrise = "";
     $newProperty = [];
 
-// открывающий тег
+//Функция обработки открывающего тега
     function startElement($p, $elname, $attr): void
     {
         global $level, $tmpp, $curTag, $curCode, $product, $property, $curProp, $nameProd, $attrPrise;
@@ -190,14 +190,14 @@ function importXml($a)
 
     }
 
-//    закрывающий тег
+// Функция обработки закрывающего тега
     function endElement($p, $elname): void
     {
         global $level;
         $level--;
     }
 
-    //содержимое тегов
+    //Функция обработки данных, находящихся внутри тегов
     function dataHandler($p, $dat): void
     {
         global $curTag, $category, $curCode, $prop, $curProp, $attrPrise, $prise;
@@ -242,11 +242,13 @@ function importXml($a)
     define("password", ""); // пароль если существует
     define("dbname", "test_samson"); // база данных
 
-// подключение у бд, загрузка данных в таблички
+// Подключение к бд
     $conn = new mysqli(servername, username, password, dbname);
     if ($conn->connect_error) {
         die("Ошибка подключения: " . $conn->connect_error);
     }
+
+    //Загрузка данных в таблицы
     global $product, $prise, $category, $property, $prop;
     //$total = null;
 
@@ -301,11 +303,11 @@ function importXml($a)
         $ar = [];
         $code_r = 0;
         foreach ($category as $el) {
-            if (!in_array($el[1], $ar)) {
+            if (!in_array($el[1], $ar, true)) {
                 $ar[] = $el[1];
-                $code_r = array_search($el[1], $ar) + 1;
+                $code_r = array_search($el[1], $ar, true) + 1;
             } else {
-                $code_r = array_search($el[1], $ar) + 1;
+                $code_r = array_search($el[1], $ar, true) + 1;
             }
             $val1 = mysqli_real_escape_string($conn, $el[0]);
             $val2 = mysqli_real_escape_string($conn, $el[1]);
@@ -412,10 +414,10 @@ try {
 
 
 <?php
-//экспорт
-function exportXml($a, int $b)
+//Экспорт данных из бд в xml файл
+function exportXml($a, int $b): void
 {
-    //подключение к бд
+    //Подключение к бд
 //    define("servername", 'internship');
 //    define("username", "root"); // имя пользователя
 //    define("password", ""); // пароль если существует
@@ -425,14 +427,14 @@ function exportXml($a, int $b)
     if ($conn->connect_error) {
         die("Ошибка подключения: " . $conn->connect_error);
     }
-    //выгрузка данных из таблиц
+    //Выгрузка данных из таблиц
     $product = $conn->query('SELECT * FROM `a_product`');
     $price = $conn->query('SELECT * FROM `a_price`');
     $category = $conn->query('SELECT * FROM `a_category`');
     $property = $conn->query('SELECT * FROM `a_property`');
     $value_property = $conn->query('SELECT * FROM `a_value_property`');
 
-// раскладываем все по массивам
+//Данные, полученные из таблиц, раскладываем по массивам
     $arr_product = [];
     while ($row = $product->fetch_assoc()) {
         $arr_product[] = [$row['code'], $row['name']];
@@ -473,7 +475,7 @@ function exportXml($a, int $b)
         }
     }
 
-//создание xml файла
+//Создание xml файла
     $xw = xmlwriter_open_memory();
     xmlwriter_set_indent($xw, 1);
     $res = xmlwriter_set_indent_string($xw, ' ');
@@ -481,10 +483,10 @@ function exportXml($a, int $b)
 
     xmlwriter_start_element($xw, 'Товары');
     foreach ($arr_product as $elprod) {
-        if(empty($b) || in_array($elprod[0], $resalt)) {
+        if(empty($b) || in_array($elprod[0], $resalt, true)) {
             xmlwriter_start_element($xw, 'Товар');
             xmlwriter_start_attribute($xw, 'Код');
-            xmlwriter_text($xw, "$elprod[0]");
+            xmlwriter_text($xw, (string)$elprod[0]);
             xmlwriter_start_attribute($xw, 'Название');
             xmlwriter_text($xw, "$elprod[1]");
             xmlwriter_end_attribute($xw);
@@ -493,22 +495,22 @@ function exportXml($a, int $b)
                 if ($elprice[0] == $elprod[0]) {
                     xmlwriter_start_element($xw, 'Цена');
                     xmlwriter_start_attribute($xw, 'Тип');
-                    xmlwriter_text($xw, "$elprice[1]");
+                    xmlwriter_text($xw, (string)$elprice[1]);
                     xmlwriter_end_attribute($xw);
-                    xmlwriter_text($xw, "$elprice[2]");
+                    xmlwriter_text($xw, (string)$elprice[2]);
                     xmlwriter_end_element($xw);
                 }
             }
             xmlwriter_start_element($xw, 'Свойства');
             foreach ($arr_value_property as $elproperty) {
                 if ($elproperty[0] == $elprod[0]) {
-                    xmlwriter_start_element($xw, "$elproperty[1]");
+                    xmlwriter_start_element($xw, (string)$elproperty[1]);
                     if ($elproperty[2]) {
-                        xmlwriter_start_attribute($xw, "$elproperty[2]");
-                        xmlwriter_text($xw, "$elproperty[3]");
+                        xmlwriter_start_attribute($xw, (string)$elproperty[2]);
+                        xmlwriter_text($xw, (string)$elproperty[3]);
                         xmlwriter_end_attribute($xw);
                     }
-                    xmlwriter_text($xw, "$elproperty[4]");
+                    xmlwriter_text($xw, (string)$elproperty[4]);
                     xmlwriter_end_element($xw);
                 }
             }
@@ -517,15 +519,15 @@ function exportXml($a, int $b)
             foreach ($arr_category as $elcat) {
                 if ($elprod[0] == $elcat[0]) {
                     xmlwriter_start_element($xw, 'Раздел');
-                    xmlwriter_text($xw, "$elcat[2]");
+                    xmlwriter_text($xw, (string)$elcat[2]);
                     xmlwriter_end_element($xw);
                 }
             }
             xmlwriter_end_element($xw);
-            xmlwriter_end_element($xw);//товар
+            xmlwriter_end_element($xw);//Закрывающий тег товар
         }
     }
-    xmlwriter_end_element($xw);//товары
+    xmlwriter_end_element($xw);//Закрывающий тег товары
 
     $fileXml = xmlwriter_output_memory($xw);
     $file = $a;
