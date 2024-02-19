@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Товары">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Товар" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Цена" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:float">
+                      <xs:attribute type="xs:string" name="Тип" use="optional"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Свойства">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:byte" name="Плотность" minOccurs="0"/>
+                    <xs:element name="Белизна" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:short">
+                            <xs:attribute type="xs:string" name="ЕдИзм" use="optional"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="Формат" maxOccurs="unbounded" minOccurs="0"/>
+                    <xs:element type="xs:string" name="Тип" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Разделы">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="Раздел" maxOccurs="unbounded" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:short" name="Код" use="optional"/>
+            <xs:attribute type="xs:string" name="Название" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
