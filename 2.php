@@ -14,7 +14,6 @@
 //Функция возвращает строку с инвертированной подстрокой(2 вхождение)
 function convertString(string $a, string $b) : string
 {
-    //Функция для многобайтовых строк, которая переворачивает строку задом наперёд
     function mb_strrev($str): string
     {
         $r = '';
@@ -24,23 +23,17 @@ function convertString(string $a, string $b) : string
         return $r;
     }
 
-    $pattern = '/^[a-z0-9\s_]+$/i';
-    $pattern_1 = '/^[а-яё0-9\s_]+$/i';
-    if (preg_match($pattern, $a) || preg_match($pattern_1, $a)) {
-        if ((strlen($a) > strlen($b)) && !empty($b)) {
-            if (substr_count($a, $b) >= 2) {
-                $indexOne = strpos($a, $b) + strlen($b);
-                $indexTwo = strpos($a, $b, $indexOne);
-                $replace = mb_strrev($b);
-                return substr_replace($a, $replace, $indexTwo, strlen($b));
-            } else {
-                return $a;
-            }
+    if ((strlen($a) > strlen($b)) && !empty($b)) {
+        if (substr_count($a, $b) >= 2) {
+            $indexOne = strpos($a, $b) + strlen($b);
+            $indexTwo = strpos($a, $b, $indexOne);
+            $replace = mb_strrev($b);
+            return substr_replace($a, $replace, $indexTwo, strlen($b));
         } else {
-            throw new \RuntimeException('$b должна быть не пустой, причем длина $a должна быть больше $b');
+            return $a;
         }
     } else {
-        throw new \RuntimeException('строка $a не должна быть пустой и может содержать цифры и либо латинские, либо русские буквы');
+        throw new \RuntimeException('$b должна быть не пустой, причем длина $a должна быть больше $b');
     }
 }
 
