@@ -10,31 +10,28 @@
 <body>
 
 <?php
+//Функция для многобайтовых строк, которая переворачивает строку задом наперёд
+function mb_strrev($str){
+    $r = '';
+    for ($i = mb_strlen($str); $i>=0; $i--) {
+        $r .= mb_substr($str, $i, 1);
+    }
+    return $r;
+}
 
 //Функция возвращает строку с инвертированной подстрокой(2 вхождение)
 function convertString(string $a, string $b) : string
 {
-    function mb_strrev($str): string
-    {
-        $r = '';
-        for ($i = mb_strlen($str); $i>=0; $i--) {
-            $r .= mb_substr($str, $i, 1);
-        }
-        return $r;
-    }
-
-    if ((strlen($a) > strlen($b)) && !empty($b)) {
-        if (substr_count($a, $b) >= 2) {
-            $indexOne = strpos($a, $b) + strlen($b);
-            $indexTwo = strpos($a, $b, $indexOne);
-            $replace = mb_strrev($b);
-            return substr_replace($a, $replace, $indexTwo, strlen($b));
-        } else {
-            return $a;
-        }
-    } else {
+    if (empty($b) || (strlen($a) < strlen($b))) {
         throw new \RuntimeException('$b должна быть не пустой, причем длина $a должна быть больше $b');
     }
+    if (substr_count($a, $b) < 2) {
+        return $a;
+    }
+    $indexOne = strpos($a, $b) + strlen($b);
+    $indexTwo = strpos($a, $b, $indexOne);
+    $replace = mb_strrev($b);
+    return substr_replace($a, $replace, $indexTwo, strlen($b));
 }
 
 try {
