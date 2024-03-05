@@ -50,31 +50,47 @@ try {
 //Функция возвращает двумерный массив $a отсортированный по возрастанию значений для ключа $b
 function mySortForKey(array $a, string $b): array
 {
-    if (!empty($b)) {
-        for ($i = 0; $i < count($a); $i++) {
-            $arrayKey = array_keys($a[$i]);
-            if (!(in_array($b, $arrayKey, true))) {
-                throw new \RuntimeException("в подмассиве под индексом $i отсутствует ключ $b");
-            }
-        }
-        if ($b == $arrayKey[0]) {
-            $a1 = array_column($a, $arrayKey[0]);
-            array_multisort($a1, SORT_ASC, $a);
-            //print_r($a1);
-        } else {
-            $b1 = array_column($a, $arrayKey[1]);
-            array_multisort($b1, SORT_ASC, $a);
-
-        }
-        return $a;
-    } else {
+    if (empty($b)) {
         throw new \RuntimeException('значение ключа $b не может быть пустым(null)');
     }
+    for ($i = 0; $i < count($a); $i++) {
+        $arrayKey = array_keys($a[$i]);
+        if (!(in_array($b, $arrayKey, true))) {
+            throw new \RuntimeException("в подмассиве под индексом $i отсутствует ключ $b");
+        }
+    }
+
+    $arrayVal = array_column($a, $b);
+    $arrayValCopy = $arrayVal;
+    //сортировка $a с одинаковыми значениями $b
+    if(count(array_unique($arrayValCopy)) < count($arrayVal)) {
+        for ($i = 0; $i < count($a); $i++) {
+            $arrayKey = array_keys($a[$i]);
+            //формируем строку из ключей, это позволит расставить подмассивы в алфавитном порядке
+            $str = '';
+            foreach ($arrayKey as $vstr) {
+                $str .= $vstr;
+            }
+            $a[$i]['code'] = $str;
+        }
+        $arrZnach = array_column($a, 'code');
+        $arrayVal = array_column($a, $b);
+        array_multisort($arrayVal, SORT_ASC, $arrZnach, SORT_ASC, SORT_STRING, $a);
+
+        for ($i = 0; $i < count($a); $i++) {
+            $cnt = count($a[$i]);
+            for ($j = 0; $j <= $cnt - 1; $j++) {
+                unset($a[$i]['code']);
+            }
+        }
+    } else array_multisort($arrayVal, SORT_ASC, $a);
+
+    return $a;
 }
 
 try {
-    $arr = [['a'=>2,'b'=>1],['a'=>1,'b'=>3]];
-    $key = 'a';
+    $arr = [['a' => 1, 'c' => 123], ['c' => 456], ['b' => 3, 'c' => 123]];
+    $key = 'c';
     echo "<p>Функция 2<br>Входные данные<br>";
     echo "a = ";
     print_r($arr);
@@ -87,7 +103,6 @@ try {
     echo $exception->getMessage();
 }
 ?>
-
 
 
 
