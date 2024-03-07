@@ -83,8 +83,10 @@ function mySortForKey(array $a, string $b): array
                 unset($a[$i]['code']);
             }
         }
-    } else array_multisort($arrayVal, SORT_ASC, $a);
-
+        return $a;
+    }
+    
+    array_multisort($arrayVal, SORT_ASC, $a);
     return $a;
 }
 
