@@ -87,7 +87,7 @@ class newView extends newBase
         $this->setSize();
 
     }
-    public function setProperty($value)
+    public function setProperty($value): newView//добавила тип возвращаемого значения
     {
         $this->property = $value;
         return $this;//возвращает экземпляр класса
